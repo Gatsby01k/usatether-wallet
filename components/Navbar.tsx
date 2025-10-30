@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import type { Route } from 'next';
 
-const nav = [
+const nav: { href: Route; label: string }[] = [
   { href: '/', label: 'Home' },
   { href: '/swap', label: 'Swap' },
   { href: '/bridge', label: 'Bridge' },
