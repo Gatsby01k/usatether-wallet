@@ -1,18 +1,19 @@
+'use client';
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-import ConnectButton from '@/components/ConnectButton';
+import Starfield from '@/components/Starfield';
+import HeroExact from '@/components/HeroExact';
+import { HomeFeatures, FAQShort } from '@/components/HomeSections';
 
-export default function Page(){
+export default function Home() {
   return (
-    <main className="pt-10">
-      <section className="container py-8">
-        <h1 className="h1 mb-6">Connect Wallet</h1>
-        <div className="soft-card p-6 md:p-10">
-          <p className="tagline mb-4">MetaMask / WalletConnect</p>
-          <ConnectButton />
-        </div>
-      </section>
+    <main className="relative min-h-screen">
+      <Starfield />
+      <HeroExact />
+      <HomeFeatures />
+      <FAQShort />
     </main>
   );
 }
