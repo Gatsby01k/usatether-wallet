@@ -1,0 +1,17 @@
+# dependencies
+/node_modules
+
+# production
+/.next
+/out
+
+# misc
+.DS_Store
+*.log
+.env*
+
+# Added by cleaner
+.env*
+.next
+node_modules
+*.log
