@@ -1,8 +1,8 @@
-
 import Link from 'next/link';
+import type { Route } from 'next';
 
 export function HomeFeatures(){
-  const items = [
+  const items: { title: string; desc: string; href: Route }[] = [
     { title: 'Swap', desc: 'Simple token swaps with clear fees and finality.', href: '/swap' },
     { title: 'Bridge', desc: 'Move value between USAT and USDT with confidence.', href: '/bridge' },
     { title: 'Buy', desc: 'On-ramp options for fast USD → crypto (coming soon).', href: '/buy' },
