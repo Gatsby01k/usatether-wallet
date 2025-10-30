@@ -1,19 +1,8 @@
-'use client';
-
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 export const revalidate = false;
 
-import Starfield from '@/components/Starfield';
-import HeroExact from '@/components/HeroExact';
-import { HomeFeatures, FAQShort } from '@/components/HomeSections';
+import HomeClient from './_home-client';
 
-export default function Home() {
-  return (
-    <main className="relative min-h-screen">
-      <Starfield />
-      <HeroExact />
-      <HomeFeatures />
-      <FAQShort />
-    </main>
-  );
+export default function Page() {
+  return <HomeClient />;
 }
