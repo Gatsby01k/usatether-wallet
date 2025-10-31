@@ -2,18 +2,17 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-type SectionId = 'swap' | 'bridge' | 'buy' | 'faq';
+type SectionRoute = '/swap' | '/bridge' | '/buy' | '/faq';
 
-const items: { key: SectionId; label: string }[] = [
-  { key: 'swap', label: 'Swap' },
-  { key: 'bridge', label: 'Bridge' },
-  { key: 'buy', label: 'Buy' },
-  { key: 'faq', label: 'FAQ' },
+const items: { href: SectionRoute; label: string }[] = [
+  { href: '/swap', label: 'Swap' },
+  { href: '/bridge', label: 'Bridge' },
+  { href: '/buy', label: 'Buy' },
+  { href: '/faq', label: 'FAQ' },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
-  const onHome = pathname === '/';
 
   return (
     <nav className="sticky top-0 z-40 backdrop-blur bg-black/20">
@@ -24,21 +23,12 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link href="/" className="hover:opacity-80">Home</Link>
-
-          {items.map(({ key, label }) =>
-            onHome ? (
-              // На главной: скролл к якорям обычной ссылкой (typedRoutes не мешает)
-              <a key={key} href={`/#${key}`} className="text-white/80 hover:text-white">
-                {label}
-              </a>
-            ) : (
-              // На внутренних: строго типизированные пути через Link
-              <Link key={key} href={`/${key}` as `/${SectionId}`} className="text-white/80 hover:text-white">
-                {label}
-              </Link>
-            )
-          )}
+          <Link href="/" className={`hover:opacity-80 ${pathname === '/' ? 'text-white' : 'text-white/80'}`}>Home</Link>
+          {items.map(({ href, label }) => (
+            <Link key={href} href={href} className="text-white/80 hover:text-white">
+              {label}
+            </Link>
+          ))}
         </div>
       </div>
     </nav>
