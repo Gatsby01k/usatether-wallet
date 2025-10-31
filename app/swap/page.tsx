@@ -1,15 +1,12 @@
-'use client';
+"use client";
+import SwapForm from "@/components/SwapForm";
 
-export default function Page(){
+export default function SwapPage() {
   return (
-    <main className="relative min-h-[70vh] pt-24">
-      <section className="container mx-auto px-5">
-        <h1 className="text-4xl font-extrabold">Swap</h1>
-        <p className="mt-3 text-white/70 max-w-2xl">Trade tokens with clarity and minimal slippage. (MVP placeholder)</p>
-        <div className="mt-6 rounded-2xl border border-white/10 p-5 bg-white/5">
-          <div className="text-sm text-white/60">Component placeholder — wire your logic here.</div>
-        </div>
-      </section>
+    <main className="container mx-auto max-w-5xl px-4 py-16">
+      <h1 className="mb-6 text-3xl font-semibold">Swap stablecoins</h1>
+      <p className="mb-8 text-white/70">Fast swaps via 0x — USDC/USDT/DAI on Ethereum, Base, Arbitrum.</p>
+      <SwapForm />
     </main>
   );
 }
