@@ -1,4 +1,5 @@
-import HeroExact from '@/components/HeroExact';
+// app/page.tsx
+import HeroExact from "@/components/HeroExact";
 
 export default function Page() {
   return (
