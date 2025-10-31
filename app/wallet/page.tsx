@@ -4,8 +4,6 @@
 import ConnectButton from '@/components/ConnectButton';
 import { WalletHints } from '@/components/WalletHints';
 import ConnectDebug from '@/components/ConnectDebug';
-// ...
-<ConnectDebug />
 
 export default function WalletPage() {
   return (
@@ -18,6 +16,7 @@ export default function WalletPage() {
       </div>
 
       <WalletHints />
+      <ConnectDebug />
     </main>
   );
 }
