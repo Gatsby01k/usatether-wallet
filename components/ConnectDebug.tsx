@@ -9,7 +9,7 @@ export default function ConnectDebug() {
       status: {status}
       {'\n'}
       connectors:
-      {connectors.map(c => `\n- ${c.id} (${c.name}) ready=${(c as any).ready}`).join('')}
+      {connectors.map((c) => `\n- ${c.id} (${c.name}) ready=${(c as any).ready}`).join('')}
     </pre>
   );
 }
