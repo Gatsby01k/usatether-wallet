@@ -4,13 +4,11 @@
 import { ReactNode, useMemo } from 'react';
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { mainnet, arbitrum, polygon, base } from 'wagmi/chains';
-import { injected } from 'wagmi/connectors';
-import { walletConnect } from 'wagmi/connectors';
+import { injected, walletConnect } from '@wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const wcProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
 
-// фиксируем кортеж и transports — важно для типов
 const chains = [mainnet, base, arbitrum, polygon] as const;
 const transports = {
   [mainnet.id]: http(),
@@ -20,19 +18,16 @@ const transports = {
 } as const;
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const queryClient = useMemo(() => new (require('@tanstack/react-query').QueryClient)(), []);
+  const queryClient = useMemo(() => new QueryClient(), []);
 
   const config = useMemo(() => {
-    const isClient = typeof window !== 'undefined';
-
-    const conns = [
-      // MetaMask / любые инжектированные кошельки
+    const connectors = [
       injected({ shimDisconnect: true }),
     ];
 
-    // WalletConnect подключаем только если есть projectId и уже на клиенте
-    if (isClient && wcProjectId) {
-      conns.push(
+    if (typeof window !== 'undefined' && wcProjectId) {
+      connectors.push(
+        // NB: типизацию страхуем as any на случай расхождения минорок в кэше Vercel
         walletConnect({
           projectId: wcProjectId,
           showQrModal: true,
@@ -42,15 +37,15 @@ export default function Providers({ children }: { children: ReactNode }) {
             url: 'https://usatether.io',
             icons: ['https://usatether.io/opengraph-image.png'],
           },
-        })
+        }) as any
       );
     }
 
     return createConfig({
       chains,
       transports,
-      connectors: conns,
-      ssr: true, // ок для App Router; сами спрячет UI до монтирования
+      connectors,
+      ssr: false, // проще для WC-хранилища и избегаем конфликтов requestedChains
     });
   }, []);
 
