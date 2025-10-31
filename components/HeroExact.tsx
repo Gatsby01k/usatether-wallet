@@ -1,62 +1,57 @@
-// components/HeroExact.tsx
-'use client';
-import Image from 'next/image';
-import Link from 'next/link';
-import ConnectButton from '@/components/ConnectButton';
+// components/HeroExact.tsx — awwwards-стиль, чистый и концентрированный
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, WalletMinimal, Link2 } from "lucide-react";
 
 export default function HeroExact() {
   return (
-    <section className="relative overflow-hidden">
-      {/* фоны героя отправляем ЕЩЁ ниже звёзд */}
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(1200px_600px_at_15%_20%,#134a9f_0%,transparent_60%),radial-gradient(1200px_600px_at_85%_70%,#b6203b_0%,transparent_60%)]" />
-      <div className="absolute inset-0 -z-20 bg-[linear-gradient(#0000,#0003)]" />
-
-      <div className="container mx-auto px-5 pt-28 pb-10 text-center">
-        <div className="mx-auto mb-6 h-14 w-14 relative">
-          <Image src="/logo.svg" alt="USATether" fill className="object-contain" />
+    <header className="relative z-10">
+      <div className="container mx-auto px-6 pt-24 pb-14">
+        {/* Лого-значок сверху по центру */}
+        <div className="flex justify-center">
+          <Image
+            src="/logo.svg"
+            alt="USATether"
+            width={44}
+            height={44}
+            className="opacity-90"
+            priority
+          />
         </div>
 
-        <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold leading-[1.05] tracking-tight">
-          The <span className="text-[#1AA5FF] drop-shadow">American</span><br/> Web Wallet
+        {/* Заголовок */}
+        <h1 className="mx-auto mt-6 max-w-4xl text-center text-5xl font-extrabold leading-tight tracking-tight md:text-6xl">
+          The <span className="text-sky-300">American</span> Web Wallet
         </h1>
 
-        <p className="mt-8 text-3xl sm:text-4xl font-extrabold">
-          USAT <span className="align-[-1px] opacity-90">↔</span> USDT Bridge
+        <p className="mx-auto mt-4 max-w-3xl text-center text-white/70 text-lg md:text-xl">
+          USAT ↔ USDT Bridge. Built for the U.S. market — secure, compliant, and beautifully simple.
         </p>
 
-        <p className="mt-3 text-base sm:text-lg text-white/80">
-          Built for the U.S. market — secure, compliant, and beautifully
+        {/* CTA */}
+        <div className="mt-8 flex items-center justify-center gap-3">
+          <Link
+            href="/bridge"
+            className="inline-flex items-center gap-2 rounded-2xl bg-sky-500/90 px-5 py-3 font-semibold text-white shadow-lg shadow-sky-500/20 hover:bg-sky-500"
+          >
+            Launch Bridge <ArrowRight className="h-4 w-4" />
+          </Link>
+          <div className="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
+            <WalletMinimal className="h-4 w-4 opacity-80" />
+            <span className="text-sm">Connect MetaMask</span>
+            <span className="text-white/30">•</span>
+            <Link2 className="h-4 w-4 opacity-80" />
+            <span className="text-sm">WalletConnect</span>
+          </div>
+        </div>
+
+        {/* Мелкая подпись под CTA */}
+        <p className="mt-3 text-center text-xs text-white/50">
+          Self-custody only. This site never stores keys.
         </p>
-
-        <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
-          <Link href="/bridge" className="btn btn-blue shadow-lg px-6 py-3 rounded-2xl">
-            <span>Launch Bridge</span> <span aria-hidden>→</span>
-          </Link>
-          <ConnectButton />
-        </div>
       </div>
-
-      {/* 4 плитки-раздела */}
-      <div className="container mx-auto px-5 pb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link href="/swap" className="block soft-card hover:border-white/25 transition">
-            <div className="text-lg font-semibold mb-1">Swap</div>
-            <div className="text-white/70 text-sm">Simple token swaps with clear fees and finality.</div>
-          </Link>
-          <Link href="/bridge" className="block soft-card hover:border-white/25 transition">
-            <div className="text-lg font-semibold mb-1">Bridge</div>
-            <div className="text-white/70 text-sm">Move value between USAT and USDT with confidence.</div>
-          </Link>
-          <Link href="/buy" className="block soft-card hover:border-white/25 transition">
-            <div className="text-lg font-semibold mb-1">Buy</div>
-            <div className="text-white/70 text-sm">USD → crypto on-ramp (coming soon). Self-custody only.</div>
-          </Link>
-          <Link href="/faq" className="block soft-card hover:border-white/25 transition">
-            <div className="text-lg font-semibold mb-1">FAQ</div>
-            <div className="text-white/70 text-sm">Compliance & security answers.</div>
-          </Link>
-        </div>
-      </div>
-    </section>
+    </header>
   );
 }
