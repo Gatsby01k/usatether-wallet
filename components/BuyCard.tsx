@@ -1,26 +1,25 @@
 "use client";
 export default function BuyCard({
-  title, href, soon,
-}: { title: string; href?: string; soon?: boolean; }) {
+  title, href, soon = true, note,
+}: { title: string; href?: string; soon?: boolean; note?: string }) {
+  const disabled = soon || !href;
   return (
     <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">{title}</h3>
-        {soon ? (
-          <span className="rounded-full bg-white/10 px-2 py-1 text-xs">soon</span>
-        ) : null}
+        <span className="badge-soon">SOON</span>
       </div>
-      <p className="mt-2 text-sm text-white/70">Card on-ramp to buy stablecoins directly.</p>
+      <p className="mt-2 text-sm text-white/70">
+        {note ?? "Card on-ramp for buying stablecoins. USAT support will be added at launch."}
+      </p>
       <div className="mt-4">
-        {href ? (
-          <a target="_blank" rel="noopener noreferrer"
-             className="inline-flex rounded-xl bg-emerald-500/90 px-3 py-2 text-sm font-medium hover:bg-emerald-500"
-             href={href}>
-            Open
-          </a>
-        ) : (
-          <button disabled className="rounded-xl bg-white/10 px-3 py-2 text-sm opacity-60">Not available</button>
-        )}
+        <button
+          disabled={disabled}
+          className={`btn-primary ${disabled ? "opacity-60" : ""}`}
+          onClick={() => { if (!disabled && href) window.open(href, "_blank", "noopener,noreferrer"); }}
+        >
+          Open
+        </button>
       </div>
     </div>
   );
