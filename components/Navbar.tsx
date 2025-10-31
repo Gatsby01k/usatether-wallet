@@ -1,38 +1,39 @@
-
+// components/Navbar.tsx
 'use client';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import type { Route } from 'next';
 
-const nav: { href: Route; label: string }[] = [
-  { href: '/', label: 'Home' },
-  { href: '/swap', label: 'Swap' },
-  { href: '/bridge', label: 'Bridge' },
-  { href: '/buy', label: 'Buy' },
-  { href: '/faq', label: 'FAQ' },
+const items = [
+  { key: 'swap', label: 'Swap' },
+  { key: 'bridge', label: 'Bridge' },
+  { key: 'buy', label: 'Buy' },
+  { key: 'faq', label: 'FAQ' },
 ];
 
-export default function Navbar(){
+export default function Navbar() {
   const pathname = usePathname();
+  const onHome = pathname === '/';
+
   return (
-    <header className="fixed top-0 inset-x-0 z-40 backdrop-blur-xl bg-black/10 border-b border-white/10">
-      <div className="container mx-auto px-5 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="relative w-8 h-8">
-            <Image src="/logo.svg" alt="USATether" fill className="object-contain" />
-          </div>
-          <span className="font-bold tracking-tight">USATether</span>
+    <nav className="sticky top-0 z-40 backdrop-blur bg-black/20">
+      <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2 font-semibold">
+          <img src="/logo.svg" alt="USATether" className="h-6 w-6" />
+          <span>USATether</span>
         </Link>
-        <nav className="flex items-center gap-6">
-          {nav.map(i => (
-            <Link key={i.href} href={i.href}
-              className={"text-sm font-medium hover:text-white " + (pathname===i.href? "text-white":"text-white/70")}>
-              {i.label}
-            </Link>
-          ))}
-        </nav>
+
+        <div className="flex items-center gap-4">
+          <Link href="/" className={`hover:opacity-80 ${onHome ? 'text-white' : 'text-white/80'}`}>Home</Link>
+          {items.map(i => {
+            const href = onHome ? `/#${i.key}` : `/${i.key}`;
+            return (
+              <Link key={i.key} href={href} className="text-white/80 hover:text-white">
+                {i.label}
+              </Link>
+            );
+          })}
+        </div>
       </div>
-    </header>
+    </nav>
   );
 }
