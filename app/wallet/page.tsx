@@ -1,9 +1,11 @@
 // app/wallet/page.tsx
 'use client';
 
-import ConnectDebug from '@/components/ConnectDebug';
 import ConnectButton from '@/components/ConnectButton';
 import { WalletHints } from '@/components/WalletHints';
+import ConnectDebug from '@/components/ConnectDebug';
+// ...
+<ConnectDebug />
 
 export default function WalletPage() {
   return (
