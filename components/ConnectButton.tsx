@@ -1,72 +1,93 @@
-// components/ConnectButton.tsx
-"use client";
+'use client';
 
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { useMemo } from "react";
-import { Wallet as WalletIcon, PlugZap, LogOut } from "lucide-react";
-
-function truncate(addr?: string, n = 4) {
-  if (!addr) return "";
-  return `${addr.slice(0, 2 + n)}…${addr.slice(-n)}`;
-}
+import { useEffect, useState } from 'react';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
 
 export default function ConnectButton() {
-  const { address, isConnected, chain } = useAccount();
-  const { connect, connectors, status, error } = useConnect();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const { address, isConnected } = useAccount();
+  const { connectors, connect, status, error, reset } = useConnect();
   const { disconnect } = useDisconnect();
 
-  const metaMask = useMemo(
-    () => connectors.find((c) => c.name.toLowerCase().includes("metamask")),
-    [connectors]
-  );
-  const wc = useMemo(
-    () => connectors.find((c) => c.id === "walletConnect"),
-    [connectors]
-  );
-
-  if (isConnected) {
+  if (!mounted) {
+    // прячем UI до клиента, чтобы не было «пустых» коннекторов из SSR
     return (
-      <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-md">
-        <WalletIcon className="size-4 opacity-80" />
-        <span className="text-sm font-medium">{truncate(address)}</span>
-        {chain?.name && (
-          <span className="text-xs text-white/60">• {chain.name}</span>
-        )}
+      <button className="px-4 py-2 rounded-lg opacity-50 cursor-not-allowed">
+        Connect
+      </button>
+    );
+  }
+
+  if (isConnected && address) {
+    const short = `${address.slice(0, 6)}…${address.slice(-4)}`;
+    return (
+      <div className="flex items-center gap-2">
+        <span className="px-3 py-2 rounded-lg bg-white/10">{short}</span>
         <button
           onClick={() => disconnect()}
-          className="ml-2 inline-flex items-center gap-1 rounded-xl bg-white/10 px-2 py-1 text-xs hover:bg-white/15"
-          title="Disconnect"
+          className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
         >
-          <LogOut className="size-3" />
           Disconnect
         </button>
       </div>
     );
   }
 
+  // отделяем инжект и WC, чтобы явно показать, что доступно
+  const injectedConn = connectors.find((c) => c.id === 'injected');
+  const wcConn = connectors.find((c) => c.id === 'walletConnect');
+
+  const metaMaskAvailable = Boolean(injectedConn?.ready);
+  const wcAvailable = Boolean(wcConn); // появится, если есть NEXT_PUBLIC_WC_PROJECT_ID
+
   return (
     <div className="flex flex-wrap gap-2">
       <button
-        onClick={() => metaMask && connect({ connector: metaMask })}
-        disabled={!metaMask || status === "pending"}
-        className="btn-primary inline-flex items-center gap-2"
+        onClick={() => injectedConn && connect({ connector: injectedConn })}
+        disabled={!metaMaskAvailable || status === 'pending'}
+        className={`px-4 py-2 rounded-lg transition ${
+          !metaMaskAvailable || status === 'pending'
+            ? 'opacity-50 cursor-not-allowed bg-white/10'
+            : 'bg-white/10 hover:bg-white/20'
+        }`}
+        title={
+          !metaMaskAvailable
+            ? 'MetaMask не найден. Установите расширение.'
+            : status === 'pending'
+            ? 'Подключаемся…'
+            : 'Подключиться через MetaMask'
+        }
       >
-        <PlugZap className="size-4" />
-        Connect MetaMask
+        {status === 'pending' ? 'Connecting…' : 'MetaMask'}
       </button>
 
       <button
-        onClick={() => wc && connect({ connector: wc })}
-        disabled={!wc || status === "pending"}
-        className="btn-ghost inline-flex items-center gap-2"
+        onClick={() => wcConn && connect({ connector: wcConn })}
+        disabled={!wcAvailable || status === 'pending'}
+        className={`px-4 py-2 rounded-lg transition ${
+          !wcAvailable || status === 'pending'
+            ? 'opacity-50 cursor-not-allowed bg-white/10'
+            : 'bg-white/10 hover:bg-white/20'
+        }`}
+        title={
+          !wcAvailable
+            ? 'WalletConnect отключён (нет NEXT_PUBLIC_WC_PROJECT_ID).'
+            : status === 'pending'
+            ? 'Подключаемся…'
+            : 'Подключиться через WalletConnect'
+        }
       >
-        <WalletIcon className="size-4" />
-        WalletConnect
+        {status === 'pending' ? 'Connecting…' : 'WalletConnect'}
       </button>
 
       {error && (
-        <div className="basis-full text-xs text-red-400/90">
+        <div className="w-full text-sm text-red-300">
           {error.message}
+          <button onClick={() => reset()} className="underline ml-2">
+            reset
+          </button>
         </div>
       )}
     </div>
