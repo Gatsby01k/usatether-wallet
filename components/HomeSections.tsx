@@ -1,6 +1,15 @@
-// components/HomeSections.tsx
+// components/HomeSections.tsx — финальная версия
+import type { Route } from "next";
 import Link from "next/link";
-import { Shield, Repeat, CreditCard, HelpCircle, Newspaper, Lock, CheckCircle2 } from "lucide-react";
+import {
+  Shield,
+  Repeat,
+  CreditCard,
+  HelpCircle,
+  Newspaper,
+  Lock,
+  CheckCircle2,
+} from "lucide-react";
 
 /* ===== Features ===== */
 export function HomeFeatures() {
@@ -8,28 +17,28 @@ export function HomeFeatures() {
     {
       title: "Swap",
       text: "Simple token swaps with clear fees and finality.",
-      href: "/swap",
+      href: "/swap" as Route,
       icon: Repeat,
     },
     {
       title: "Bridge",
       text: "Move value between USAT and USDT with confidence.",
-      href: "/bridge",
+      href: "/bridge" as Route,
       icon: Shield,
     },
     {
       title: "Buy",
       text: "USD → crypto on-ramp (coming soon). Self-custody only.",
-      href: "/buy",
+      href: "/buy" as Route,
       icon: CreditCard,
     },
     {
       title: "FAQ",
       text: "Compliance & security answers.",
-      href: "/faq",
+      href: "/faq" as Route,
       icon: HelpCircle,
     },
-  ];
+  ] as const;
 
   return (
     <section className="container mx-auto px-6 py-10">
@@ -64,7 +73,10 @@ export function SocialProof() {
       <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
         <div className="grid items-center gap-4 text-center md:grid-cols-3">
           {items.map(({ t, i: I }) => (
-            <div key={t} className="flex items-center justify-center gap-3 text-white/80">
+            <div
+              key={t}
+              className="flex items-center justify-center gap-3 text-white/80"
+            >
               <I className="h-5 w-5 opacity-80" />
               <span className="text-sm md:text-base">{t}</span>
             </div>
@@ -75,7 +87,7 @@ export function SocialProof() {
   );
 }
 
-/* ===== CTA Banner (дублирует направленность) ===== */
+/* ===== CTA Banner ===== */
 export function CtaBanner() {
   return (
     <section className="container mx-auto px-6 py-16">
@@ -83,11 +95,12 @@ export function CtaBanner() {
         <div>
           <h3 className="text-2xl font-bold">Ready to move value?</h3>
           <p className="mt-2 text-white/70">
-            Bridge USAT ↔ USDT with clarity. WalletConnect planned; MetaMask works today.
+            Bridge USAT ↔ USDT with clarity. WalletConnect planned; MetaMask
+            works today.
           </p>
         </div>
         <Link
-          href="/bridge"
+          href={"/bridge" as Route}
           className="inline-flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 font-semibold hover:bg-white/15"
         >
           Launch Bridge
@@ -97,7 +110,7 @@ export function CtaBanner() {
   );
 }
 
-/* ===== FAQ (краткий) ===== */
+/* ===== FAQ (Short) ===== */
 export function FAQShort() {
   const q = [
     {
@@ -118,7 +131,10 @@ export function FAQShort() {
       <h2 className="mb-6 text-2xl font-extrabold">FAQ</h2>
       <div className="grid gap-4 md:grid-cols-3">
         {q.map(({ q, a }) => (
-          <div key={q} className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div
+            key={q}
+            className="rounded-2xl border border-white/10 bg-white/5 p-5"
+          >
             <h3 className="mb-2 font-semibold">{q}</h3>
             <p className="text-sm text-white/70 leading-relaxed">{a}</p>
           </div>
