@@ -6,11 +6,10 @@ import ConnectButton from '@/components/ConnectButton';
 export default function HeroExact() {
   return (
     <section className="relative overflow-hidden">
-      {/* background */}
+      {/* градиентный фон секции; звёзды будут СНИЗУ, из layout */}
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(1200px_600px_at_15%_20%,#134a9f_0%,transparent_60%),radial-gradient(1200px_600px_at_85%_70%,#b6203b_0%,transparent_60%)]" />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(#0000,#0003)]" />
 
-      {/* hero */}
       <div className="container mx-auto px-5 pt-28 pb-10 text-center">
         <div className="mx-auto mb-6 h-14 w-14 relative">
           <Image src="/logo.svg" alt="USATether" fill className="object-contain" />
@@ -36,35 +35,24 @@ export default function HeroExact() {
         </div>
       </div>
 
-      {/* tiles */}
+      {/* 4 плитки */}
       <div className="container mx-auto px-5 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link href="/swap" className="block soft-card hover:border-white/25 transition">
             <div className="text-lg font-semibold mb-1">Swap</div>
-            <div className="text-white/70 text-sm">
-              Simple token swaps with clear fees and finality.
-            </div>
+            <div className="text-white/70 text-sm">Simple token swaps with clear fees and finality.</div>
           </Link>
-
           <Link href="/bridge" className="block soft-card hover:border-white/25 transition">
             <div className="text-lg font-semibold mb-1">Bridge</div>
-            <div className="text-white/70 text-sm">
-              Move value between USAT and USDT with confidence.
-            </div>
+            <div className="text-white/70 text-sm">Move value between USAT and USDT with confidence.</div>
           </Link>
-
           <Link href="/buy" className="block soft-card hover:border-white/25 transition">
             <div className="text-lg font-semibold mb-1">Buy</div>
-            <div className="text-white/70 text-sm">
-              USD → crypto on-ramp (coming soon). Self-custody only.
-            </div>
+            <div className="text-white/70 text-sm">USD → crypto on-ramp (coming soon). Self-custody only.</div>
           </Link>
-
           <Link href="/faq" className="block soft-card hover:border-white/25 transition">
             <div className="text-lg font-semibold mb-1">FAQ</div>
-            <div className="text-white/70 text-sm">
-              Compliance & security answers.
-            </div>
+            <div className="text-white/70 text-sm">Compliance & security answers.</div>
           </Link>
         </div>
       </div>
