@@ -1,12 +1,14 @@
 import Link from "next/link";
 import HeroExact from "@/components/HeroExact";
 
+type SectionId = "swap" | "bridge" | "buy" | "faq";
+
 function SectionShell({
   id,
   title,
   children,
 }: {
-  id: string;
+  id: SectionId;
   title: string;
   children: React.ReactNode;
 }) {
@@ -38,13 +40,11 @@ export default function Page() {
       <HeroExact />
 
       <SectionShell id="swap" title="Swap">
-        Simple token swaps with clear fees and finality. Ideal for USAT ⇄ USDT
-        and more.
+        Simple token swaps with clear fees and finality. Ideal for USAT ⇄ USDT and more.
       </SectionShell>
 
       <SectionShell id="bridge" title="Bridge">
-        Move value between USAT and USDT with confidence. Compliance-first
-        routes.
+        Move value between USAT and USDT with confidence. Compliance-first routes.
       </SectionShell>
 
       <SectionShell id="buy" title="Buy">
