@@ -1,9 +1,10 @@
-// components/Navbar.tsx
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const items = [
+type SectionId = 'swap' | 'bridge' | 'buy' | 'faq';
+
+const items: { key: SectionId; label: string }[] = [
   { key: 'swap', label: 'Swap' },
   { key: 'bridge', label: 'Bridge' },
   { key: 'buy', label: 'Buy' },
@@ -23,15 +24,21 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link href="/" className={`hover:opacity-80 ${onHome ? 'text-white' : 'text-white/80'}`}>Home</Link>
-          {items.map(i => {
-            const href = onHome ? `/#${i.key}` : `/${i.key}`;
-            return (
-              <Link key={i.key} href={href} className="text-white/80 hover:text-white">
-                {i.label}
+          <Link href="/" className="hover:opacity-80">Home</Link>
+
+          {items.map(({ key, label }) =>
+            onHome ? (
+              // На главной: скролл к якорям обычной ссылкой (typedRoutes не мешает)
+              <a key={key} href={`/#${key}`} className="text-white/80 hover:text-white">
+                {label}
+              </a>
+            ) : (
+              // На внутренних: строго типизированные пути через Link
+              <Link key={key} href={`/${key}` as `/${SectionId}`} className="text-white/80 hover:text-white">
+                {label}
               </Link>
-            );
-          })}
+            )
+          )}
         </div>
       </div>
     </nav>
