@@ -1,3 +1,4 @@
+// components/HeroExact.tsx
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,9 +7,9 @@ import ConnectButton from '@/components/ConnectButton';
 export default function HeroExact() {
   return (
     <section className="relative overflow-hidden">
-      {/* градиентный фон секции; звёзды будут СНИЗУ, из layout */}
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(1200px_600px_at_15%_20%,#134a9f_0%,transparent_60%),radial-gradient(1200px_600px_at_85%_70%,#b6203b_0%,transparent_60%)]" />
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(#0000,#0003)]" />
+      {/* фоны героя отправляем ЕЩЁ ниже звёзд */}
+      <div className="absolute inset-0 -z-20 bg-[radial-gradient(1200px_600px_at_15%_20%,#134a9f_0%,transparent_60%),radial-gradient(1200px_600px_at_85%_70%,#b6203b_0%,transparent_60%)]" />
+      <div className="absolute inset-0 -z-20 bg-[linear-gradient(#0000,#0003)]" />
 
       <div className="container mx-auto px-5 pt-28 pb-10 text-center">
         <div className="mx-auto mb-6 h-14 w-14 relative">
@@ -35,7 +36,7 @@ export default function HeroExact() {
         </div>
       </div>
 
-      {/* 4 плитки */}
+      {/* 4 плитки-раздела */}
       <div className="container mx-auto px-5 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link href="/swap" className="block soft-card hover:border-white/25 transition">
