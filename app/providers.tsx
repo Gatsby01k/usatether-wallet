@@ -21,13 +21,10 @@ export default function Providers({ children }: { children: ReactNode }) {
   const queryClient = useMemo(() => new QueryClient(), []);
 
   const config = useMemo(() => {
-    const connectors = [
-      injected({ shimDisconnect: true }),
-    ];
+    const connectors = [injected({ shimDisconnect: true })];
 
     if (typeof window !== 'undefined' && wcProjectId) {
       connectors.push(
-        // NB: типизацию страхуем as any на случай расхождения минорок в кэше Vercel
         walletConnect({
           projectId: wcProjectId,
           showQrModal: true,
@@ -45,7 +42,7 @@ export default function Providers({ children }: { children: ReactNode }) {
       chains,
       transports,
       connectors,
-      ssr: false, // проще для WC-хранилища и избегаем конфликтов requestedChains
+      ssr: false,
     });
   }, []);
 
