@@ -1,3 +1,4 @@
+// components/Navbar.tsx
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -23,7 +24,12 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link href="/" className={`hover:opacity-80 ${pathname === '/' ? 'text-white' : 'text-white/80'}`}>Home</Link>
+          <Link
+            href="/"
+            className={`hover:opacity-80 ${pathname === '/' ? 'text-white' : 'text-white/80'}`}
+          >
+            Home
+          </Link>
           {items.map(({ href, label }) => (
             <Link key={href} href={href} className="text-white/80 hover:text-white">
               {label}
