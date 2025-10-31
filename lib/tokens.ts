@@ -2,9 +2,21 @@ export type Token = {
   symbol: string;
   address: Record<number, string>; // по chainId
   decimals: number;
+  soon?: boolean;                  // для будущих токенов без контракта
 };
 
 export const TOKENS: Token[] = [
+  {
+    symbol: "USAT",
+    decimals: 6,                   // предположительно 6; поправим, когда будет контракт
+    soon: true,                    // помечаем как скоро
+    address: {
+      // адреса появятся позже — пока пусто
+      1: "",
+      8453: "",
+      42161: "",
+    },
+  },
   {
     symbol: "USDC",
     decimals: 6,
@@ -19,7 +31,7 @@ export const TOKENS: Token[] = [
     decimals: 6,
     address: {
       1: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-      8453: "0x2Ae3F1Ec7F1f5014b6EAb2eC8fA7f1d7cF29d8A2", // пример: при необходимости поправишь
+      8453: "", // уточним позже
       42161: "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
     },
   },
@@ -32,9 +44,9 @@ export const TOKENS: Token[] = [
       42161: "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
     },
   },
-  // USAT — позже, когда контракт будет известен
 ];
 
 export const findToken = (symbol: string) => TOKENS.find(t => t.symbol === symbol);
 export const tokenAddress = (symbol: string, chainId: number) => findToken(symbol)?.address[chainId] ?? "";
 export const tokenDecimals = (symbol: string) => findToken(symbol)?.decimals ?? 18;
+export const isSoon = (symbol: string) => !!findToken(symbol)?.soon;
