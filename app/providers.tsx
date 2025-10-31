@@ -2,42 +2,53 @@
 
 import { ReactNode, useMemo } from 'react';
 import { WagmiProvider, createConfig, http } from 'wagmi';
-import { mainnet, arbitrum, polygon } from 'wagmi/chains';
+import { mainnet, arbitrum, base } from 'wagmi/chains';
 import { injected } from 'wagmi/connectors';
 import { walletConnect } from 'wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const wcProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
+const wcProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID; // must be set
+const chains = [mainnet, base, arbitrum] as const;
 
-// ВАЖНО: зафиксировать кортеж и transports как const — иначе падает типизация
-const chains = [mainnet, arbitrum, polygon] as const;
 const transports = {
   [mainnet.id]: http(),
+  [base.id]: http(),
   [arbitrum.id]: http(),
-  [polygon.id]: http(),
 } as const;
 
 export default function Providers({ children }: { children: ReactNode }) {
+  const queryClient = useMemo(() => new QueryClient(), []);
+
   const config = useMemo(() => {
     const isClient = typeof window !== 'undefined';
 
-    const connectors = [
+    const list = [
       injected({ shimDisconnect: true }),
-      // WalletConnect подключаем только на клиенте и только если есть ProjectId
       ...(isClient && wcProjectId
-        ? [walletConnect({ projectId: wcProjectId, showQrModal: true })]
+        ? [
+            walletConnect({
+              projectId: wcProjectId,
+              showQrModal: true,
+              // Важно: metadata помогает Cloud корректно верифицировать origin
+              metadata: {
+                name: 'USATether Wallet',
+                description: 'The American Web Wallet',
+                url: 'https://usatether.io', // добавь этот домен и vercel-preview в Allowed origins
+                icons: ['https://usatether.io/favicon.ico'],
+              },
+            }),
+          ]
         : []),
     ];
 
     return createConfig({
       chains,
       transports,
-      connectors,
-      ssr: false, // не пытаться SSR-гидратиться
+      connectors: list,
+      ssr: false,
     });
-  }, []);
-
-  const queryClient = useMemo(() => new QueryClient(), []);
+    // ВАЖНО: зависимость от wcProjectId, чтобы при наличии ключа на клиенте коннектор реально добавился
+  }, [wcProjectId]);
 
   return (
     <WagmiProvider config={config}>
