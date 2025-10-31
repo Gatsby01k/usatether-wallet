@@ -1,16 +1,6 @@
-'use client';
+// app/page.tsx
+import HomeClient from "./_home-client";
 
-import Starfield from '@/components/Starfield';
-import HeroExact from '@/components/HeroExact';
-import { HomeFeatures, FAQShort } from '@/components/HomeSections';
-
-export default function HomeClient() {
-  return (
-    <main className="relative min-h-screen">
-      <Starfield />
-      <HeroExact />
-      <HomeFeatures />
-      <FAQShort />
-    </main>
-  );
+export default function Page() {
+  return <HomeClient />;
 }
