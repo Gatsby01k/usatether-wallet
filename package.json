@@ -1,36 +1,42 @@
 {
   "name": "usatether-wallet",
-  "private": true,
   "version": "1.0.0",
-  "description": "USATether Wallet — Awwwards-style web wallet with MetaMask & WalletConnect",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
+  "engines": {
+    "node": ">=18 <23"
+  },
   "dependencies": {
     "next": "14.2.10",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "framer-motion": "11.2.13",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+
+    "@tanstack/react-query": "5.59.16",
+
+    "wagmi": "2.12.7",
+    "@wagmi/connectors": "5.1.8",
+    "viem": "2.17.0",
+
+    "@react-native-async-storage/async-storage": "1.23.1",
+
     "lucide-react": "0.453.0",
-    "@tanstack/react-query": "^5.59.16",
-    "viem": "^2.17.5",
-    "wagmi": "^2.12.17"
+    "framer-motion": "11.2.12",
+    "clsx": "2.1.1"
   },
   "devDependencies": {
     "typescript": "5.6.3",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.10",
+
     "tailwindcss": "3.4.14",
     "postcss": "8.4.47",
     "autoprefixer": "10.4.20",
-    "eslint": "8.57.0",
-    "eslint-config-next": "14.2.10",
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "@types/node": "^20.0.0"
-  },
-  "engines": {
-    "node": ">=18 <23"
+
+    "pino-pretty": "11.3.0"
   }
 }
