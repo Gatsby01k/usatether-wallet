@@ -1,3 +1,4 @@
+// components/ConnectButton.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -12,9 +13,8 @@ export default function ConnectButton() {
   const { disconnect } = useDisconnect();
 
   if (!mounted) {
-    // прячем UI до клиента, чтобы не было «пустых» коннекторов из SSR
     return (
-      <button className="px-4 py-2 rounded-lg opacity-50 cursor-not-allowed">
+      <button className="px-4 py-2 rounded-lg bg-white/10 opacity-50 cursor-not-allowed">
         Connect
       </button>
     );
@@ -35,12 +35,11 @@ export default function ConnectButton() {
     );
   }
 
-  // отделяем инжект и WC, чтобы явно показать, что доступно
   const injectedConn = connectors.find((c) => c.id === 'injected');
   const wcConn = connectors.find((c) => c.id === 'walletConnect');
 
-  const metaMaskAvailable = Boolean(injectedConn?.ready);
-  const wcAvailable = Boolean(wcConn); // появится, если есть NEXT_PUBLIC_WC_PROJECT_ID
+  const metaMaskAvailable = Boolean((injectedConn as any)?.ready);
+  const wcAvailable = Boolean(wcConn);
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -63,24 +62,26 @@ export default function ConnectButton() {
         {status === 'pending' ? 'Connecting…' : 'MetaMask'}
       </button>
 
-      <button
-        onClick={() => wcConn && connect({ connector: wcConn })}
-        disabled={!wcAvailable || status === 'pending'}
-        className={`px-4 py-2 rounded-lg transition ${
-          !wcAvailable || status === 'pending'
-            ? 'opacity-50 cursor-not-allowed bg-white/10'
-            : 'bg-white/10 hover:bg-white/20'
-        }`}
-        title={
-          !wcAvailable
-            ? 'WalletConnect отключён (нет NEXT_PUBLIC_WC_PROJECT_ID).'
-            : status === 'pending'
-            ? 'Подключаемся…'
-            : 'Подключиться через WalletConnect'
-        }
-      >
-        {status === 'pending' ? 'Connecting…' : 'WalletConnect'}
-      </button>
+      {wcAvailable && (
+        <button
+          onClick={() => wcConn && connect({ connector: wcConn })}
+          disabled={!wcAvailable || status === 'pending'}
+          className={`px-4 py-2 rounded-lg transition ${
+            !wcAvailable || status === 'pending'
+              ? 'opacity-50 cursor-not-allowed bg-white/10'
+              : 'bg-white/10 hover:bg-white/20'
+          }`}
+          title={
+            !wcAvailable
+              ? 'WalletConnect отключён.'
+              : status === 'pending'
+              ? 'Подключаемся…'
+              : 'Подключиться через WalletConnect'
+          }
+        >
+          {status === 'pending' ? 'Connecting…' : 'WalletConnect'}
+        </button>
+      )}
 
       {error && (
         <div className="w-full text-sm text-red-300">
