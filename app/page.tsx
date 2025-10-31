@@ -1,10 +1,5 @@
-// app/page.tsx
-import HeroExact from "@/components/HeroExact";
+import HomeClient from "./_home-client";
 
 export default function Page() {
-  return (
-    <main>
-      <HeroExact />
-    </main>
-  );
+  return <HomeClient />;
 }
