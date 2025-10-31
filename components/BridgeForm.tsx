@@ -1,35 +1,38 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import ChainSelect from "./ChainSelect";
 import TokenSelect from "./TokenSelect";
-import { tokenAddress } from "@/lib/tokens";
-import { pretty } from "@/lib/format";
+import { tokenAddress, isSoon } from "@/lib/tokens";
 import { useAccount } from "wagmi";
 
 export default function BridgeForm() {
   const { address } = useAccount();
   const [fromChain, setFromChain] = useState(8453);
   const [toChain, setToChain] = useState(1);
-  const [token, setToken] = useState("USDC");
+  const [token, setToken] = useState("USAT");
   const [amount, setAmount] = useState("100");
 
-  // для MVP — строим deeplink в Jumper (powered by LI.FI)
-  const jumper = (() => {
-    const fromToken = tokenAddress(token, fromChain);
-    const toToken   = tokenAddress(token, toChain);
+  const fromAddr = useMemo(() => tokenAddress(token, fromChain), [token, fromChain]);
+  const toAddr   = useMemo(() => tokenAddress(token, toChain),   [token, toChain]);
+  const soon     = isSoon(token) || !fromAddr || !toAddr;
+
+  const jumper = useMemo(() => {
     const url = new URL("https://jumper.exchange/bridge");
     if (address) url.searchParams.set("receiverAddress", address);
     url.searchParams.set("fromChainId", String(fromChain));
     url.searchParams.set("toChainId", String(toChain));
-    if (fromToken) url.searchParams.set("fromTokenAddress", fromToken);
-    if (toToken)   url.searchParams.set("toTokenAddress", toToken);
-    if (amount)    url.searchParams.set("fromAmount", amount);
+    if (fromAddr) url.searchParams.set("fromTokenAddress", fromAddr);
+    if (toAddr)   url.searchParams.set("toTokenAddress", toAddr);
+    if (amount)   url.searchParams.set("fromAmount", amount);
     return url.toString();
-  })();
+  }, [address, fromChain, toChain, fromAddr, toAddr, amount]);
 
   return (
     <div className="mx-auto w-full max-w-xl rounded-3xl bg-white/5 p-6 backdrop-blur-md ring-1 ring-white/10">
-      <h2 className="mb-4 text-xl font-semibold">Bridge</h2>
+      <div className="mb-4 flex items-center gap-2">
+        <h2 className="text-xl font-semibold">Bridge</h2>
+        {soon && <span className="badge-soon">USAT SOON</span>}
+      </div>
 
       <div className="grid gap-4">
         <div className="grid grid-cols-2 gap-3">
@@ -49,16 +52,16 @@ export default function BridgeForm() {
           />
         </label>
 
-        <a
-          target="_blank" rel="noopener noreferrer"
-          href={jumper}
-          className="inline-flex items-center justify-center rounded-2xl bg-indigo-500/90 px-4 py-2 font-medium text-white hover:bg-indigo-500"
+        <button
+          className="btn-secondary"
+          disabled={soon}
+          onClick={() => { if (!soon) window.open(jumper, "_blank", "noopener,noreferrer"); }}
         >
-          Continue in bridge widget →
-        </a>
+          Continue in bridge →
+        </button>
 
-        <p className="text-xs text-white/50">
-          MVP uses a trusted bridge aggregator (Jumper/LI.FI). Full native in-app bridging planned.
+        <p className="text-xs text-white/60">
+          USAT bridging will be enabled after token deployment. Until then, the flow is marked as <strong>SOON</strong>.
         </p>
       </div>
     </div>
