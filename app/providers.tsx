@@ -4,7 +4,7 @@
 import { ReactNode, useMemo } from 'react';
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { mainnet, arbitrum, polygon, base } from 'wagmi/chains';
-// ВАЖНО: используем реэкспорт из 'wagmi/connectors' (а не '@wagmi/connectors')
+// использовать коннекторы из 'wagmi/connectors'
 import { injected, walletConnect } from 'wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { CreateConnectorFn } from 'wagmi';
@@ -25,7 +25,6 @@ export default function Providers({ children }: { children: ReactNode }) {
   const config = useMemo(() => {
     const isClient = typeof window !== 'undefined';
 
-    // ❗ НЕ используем "as const" и не пушим — формируем обычный mutable-массив нужного типа
     const connectorList: CreateConnectorFn[] = [
       injected({ shimDisconnect: true }),
       ...(isClient && wcProjectId
@@ -47,7 +46,6 @@ export default function Providers({ children }: { children: ReactNode }) {
     return createConfig({
       chains,
       transports,
-      // можно так же передать функцией: connectors: () => connectorList,
       connectors: connectorList,
       ssr: false,
     });
