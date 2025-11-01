@@ -4,9 +4,10 @@
 import { ReactNode, useMemo } from 'react';
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { mainnet, arbitrum, polygon, base } from 'wagmi/chains';
-// 🔧 КЛЮЧЕВОЕ: берем коннекторы из 'wagmi/connectors' (реэкспорт), а не из '@wagmi/connectors'
+// ВАЖНО: используем реэкспорт из 'wagmi/connectors' (а не '@wagmi/connectors')
 import { injected, walletConnect } from 'wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { CreateConnectorFn } from 'wagmi';
 
 const wcProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID as string | undefined;
 
@@ -24,27 +25,29 @@ export default function Providers({ children }: { children: ReactNode }) {
   const config = useMemo(() => {
     const isClient = typeof window !== 'undefined';
 
-    // Собираем один раз "иммутабельным" массивом (без push), чтобы типы не поплыли.
-    const connectorList = [
+    // ❗ НЕ используем "as const" и не пушим — формируем обычный mutable-массив нужного типа
+    const connectorList: CreateConnectorFn[] = [
       injected({ shimDisconnect: true }),
       ...(isClient && wcProjectId
-        ? [walletConnect({
-            projectId: wcProjectId,
-            showQrModal: true,
-            metadata: {
-              name: 'USATether Wallet',
-              description: 'Simple, fast & secure stablecoin wallet',
-              url: 'https://usatether.io',
-              icons: ['https://usatether.io/logo.png'],
-            },
-          })]
+        ? [
+            walletConnect({
+              projectId: wcProjectId,
+              showQrModal: true,
+              metadata: {
+                name: 'USATether Wallet',
+                description: 'Simple, fast & secure stablecoin wallet',
+                url: 'https://usatether.io',
+                icons: ['https://usatether.io/logo.png'],
+              },
+            }),
+          ]
         : []),
-    ] as const;
+    ];
 
     return createConfig({
       chains,
       transports,
-      // Можно передать как массив или функцию — оставим массив, уже ок.
+      // можно так же передать функцией: connectors: () => connectorList,
       connectors: connectorList,
       ssr: false,
     });
