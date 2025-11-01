@@ -6,15 +6,17 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: { typedRoutes: true },
   webpack: (config) => {
-    // Шимим RN AsyncStorage, чтобы MetaMask SDK не требовал настоящий RN-модуль
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
+      // Шим RN AsyncStorage (если ещё не добавлен)
       '@react-native-async-storage/async-storage': path.resolve(
         __dirname,
         'shims/asyncStorageShim.js'
       ),
-      // На всякий: если сборка где-то потребует pino-pretty в рантайме — дадим пустую заглушку
+      // Пустышка для pino-pretty (WalletConnect логгер)
       'pino-pretty': path.resolve(__dirname, 'shims/emptyModule.js'),
+      // <<< главное новое: Metamask SDK в node-сборке требует 'encoding' — на вебе не нужен
+      encoding: path.resolve(__dirname, 'shims/emptyModule.js'),
     };
     return config;
   },
