@@ -1,16 +1,16 @@
-// components/HeroExact.tsx — awwwards-стиль, герой с живой кнопкой коннекта
+// components/HeroExact.tsx — awwwards-стиль, чистый и концентрированный
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import ConnectButton from "@/components/ConnectButton";
+import ConnectWalletCTA from "@/components/ConnectWalletCTA";
 
 export default function HeroExact() {
   return (
     <header className="relative z-10">
       <div className="container mx-auto px-6 pt-24 pb-14">
-        {/* Лого сверху по центру */}
+        {/* Лого-значок сверху по центру */}
         <div className="flex justify-center">
           <Image
             src="/logo.svg"
@@ -31,7 +31,7 @@ export default function HeroExact() {
           USAT ↔ USDT Bridge. Built for the U.S. market — secure, compliant, and beautifully simple.
         </p>
 
-        {/* CTA + Connect */}
+        {/* CTA (две аккуратные кнопки) */}
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link
             href="/bridge"
@@ -40,13 +40,11 @@ export default function HeroExact() {
             Launch Bridge <ArrowRight className="h-4 w-4" />
           </Link>
 
-          {/* Реальная кнопка подключения кошелька */}
           <div className="relative z-20">
-            <ConnectButton />
+            <ConnectWalletCTA />
           </div>
         </div>
 
-        {/* Мелкая подпись под CTA */}
         <p className="mt-3 text-center text-xs text-white/50">
           Self-custody only. This site never stores keys.
         </p>
