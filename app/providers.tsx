@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const wcProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID as string | undefined;
 
-// Фиксируем сети и транспорты
+// зафиксированные сети и транспорты
 const chains = [mainnet, base, arbitrum, polygon] as const;
 const transports = {
   [mainnet.id]: http(),
@@ -24,15 +24,15 @@ export default function Providers({ children }: { children: ReactNode }) {
   const config = useMemo(() => {
     const isClient = typeof window !== 'undefined';
 
-    // Базовый injected (MetaMask / браузерные кошельки)
-    const list = [injected({ shimDisconnect: true })];
+    // 1) MetaMask / injected
+    const connectors = [injected({ shimDisconnect: true })];
 
-    // Подключаем WalletConnect ТОЛЬКО если есть projectId и это клиент
+    // 2) WalletConnect — только на клиенте и если задан projectId
     if (isClient && wcProjectId) {
-      list.push(
+      connectors.push(
         walletConnect({
           projectId: wcProjectId,
-          showQrModal: true, // откроет модалку с QR на десктопе
+          showQrModal: true,
           metadata: {
             name: 'USATether Wallet',
             description: 'Simple, fast & secure stablecoin wallet',
@@ -46,9 +46,8 @@ export default function Providers({ children }: { children: ReactNode }) {
     return createConfig({
       chains,
       transports,
-      connectors: list,
-      // SSR лучше выключить, чтобы не путать соединения и статус
-      ssr: false,
+      connectors,
+      ssr: false, // не мешаемся с SSR-хуками wagmi
     });
   }, []);
 
