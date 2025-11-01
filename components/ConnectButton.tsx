@@ -1,6 +1,4 @@
-// components/ConnectButton.tsx
 'use client';
-
 import { useEffect, useState } from 'react';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 
@@ -14,10 +12,7 @@ export default function ConnectButton() {
 
   if (!mounted) {
     return (
-      <button
-        className="inline-flex h-10 items-center justify-center rounded-xl bg-white/10 px-4 text-sm text-white/80"
-        disabled
-      >
+      <button className="inline-flex h-10 items-center justify-center rounded-xl bg-white/10 px-4 text-sm text-white/80" disabled>
         Loading…
       </button>
     );
@@ -27,13 +22,8 @@ export default function ConnectButton() {
     const short = `${address.slice(0, 6)}…${address.slice(-4)}`;
     return (
       <div className="flex items-center gap-2">
-        <span className="rounded-xl bg-emerald-500/15 px-3 py-2 text-emerald-200 text-sm">
-          {short}
-        </span>
-        <button
-          onClick={() => disconnect()}
-          className="inline-flex h-10 items-center justify-center rounded-xl bg-white/10 px-4 text-sm hover:bg-white/20"
-        >
+        <span className="rounded-xl bg-emerald-500/15 px-3 py-2 text-emerald-200 text-sm">{short}</span>
+        <button onClick={() => disconnect()} className="inline-flex h-10 items-center justify-center rounded-xl bg-white/10 px-4 text-sm hover:bg-white/20">
           Disconnect
         </button>
       </div>
@@ -60,9 +50,7 @@ export default function ConnectButton() {
       {error && (
         <div className="w-full text-sm text-red-300">
           {error.message}
-          <button onClick={() => reset()} className="underline ml-2">
-            reset
-          </button>
+          <button onClick={() => reset()} className="underline ml-2">reset</button>
         </div>
       )}
     </div>
