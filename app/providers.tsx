@@ -7,8 +7,9 @@ import { mainnet, arbitrum, polygon, base } from 'wagmi/chains';
 import { injected, walletConnect } from '@wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const wcProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
+const wcProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID as string | undefined;
 
+// Фиксируем сети и транспорты
 const chains = [mainnet, base, arbitrum, polygon] as const;
 const transports = {
   [mainnet.id]: http(),
@@ -21,27 +22,32 @@ export default function Providers({ children }: { children: ReactNode }) {
   const queryClient = useMemo(() => new QueryClient(), []);
 
   const config = useMemo(() => {
-    const connectors = [injected({ shimDisconnect: true })];
+    const isClient = typeof window !== 'undefined';
 
-    if (typeof window !== 'undefined' && wcProjectId) {
-      connectors.push(
+    // Базовый injected (MetaMask / браузерные кошельки)
+    const list = [injected({ shimDisconnect: true })];
+
+    // Подключаем WalletConnect ТОЛЬКО если есть projectId и это клиент
+    if (isClient && wcProjectId) {
+      list.push(
         walletConnect({
           projectId: wcProjectId,
-          showQrModal: true,
+          showQrModal: true, // откроет модалку с QR на десктопе
           metadata: {
             name: 'USATether Wallet',
-            description: 'Non-custodial stablecoin wallet',
+            description: 'Simple, fast & secure stablecoin wallet',
             url: 'https://usatether.io',
-            icons: ['https://usatether.io/opengraph-image.png'],
+            icons: ['https://usatether.io/logo.png'],
           },
-        }) as any
+        })
       );
     }
 
     return createConfig({
       chains,
       transports,
-      connectors,
+      connectors: list,
+      // SSR лучше выключить, чтобы не путать соединения и статус
       ssr: false,
     });
   }, []);
