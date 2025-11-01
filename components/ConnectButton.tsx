@@ -14,8 +14,11 @@ export default function ConnectButton() {
 
   if (!mounted) {
     return (
-      <button className="px-4 py-2 rounded-lg bg-white/10 opacity-50 cursor-not-allowed">
-        Connect
+      <button
+        className="inline-flex h-10 items-center justify-center rounded-xl bg-white/10 px-4 text-sm text-white/80"
+        disabled
+      >
+        Loading…
       </button>
     );
   }
@@ -24,10 +27,12 @@ export default function ConnectButton() {
     const short = `${address.slice(0, 6)}…${address.slice(-4)}`;
     return (
       <div className="flex items-center gap-2">
-        <span className="px-3 py-2 rounded-lg bg-white/10">{short}</span>
+        <span className="rounded-xl bg-emerald-500/15 px-3 py-2 text-emerald-200 text-sm">
+          {short}
+        </span>
         <button
           onClick={() => disconnect()}
-          className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
+          className="inline-flex h-10 items-center justify-center rounded-xl bg-white/10 px-4 text-sm hover:bg-white/20"
         >
           Disconnect
         </button>
@@ -35,53 +40,22 @@ export default function ConnectButton() {
     );
   }
 
-  const injectedConn = connectors.find((c) => c.id === 'injected');
-  const wcConn = connectors.find((c) => c.id === 'walletConnect');
-
-  const metaMaskAvailable = Boolean((injectedConn as any)?.ready);
-  const wcAvailable = Boolean(wcConn);
-
   return (
-    <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => injectedConn && connect({ connector: injectedConn })}
-        disabled={!metaMaskAvailable || status === 'pending'}
-        className={`px-4 py-2 rounded-lg transition ${
-          !metaMaskAvailable || status === 'pending'
-            ? 'opacity-50 cursor-not-allowed bg-white/10'
-            : 'bg-white/10 hover:bg-white/20'
-        }`}
-        title={
-          !metaMaskAvailable
-            ? 'MetaMask не найден. Установите расширение.'
-            : status === 'pending'
-            ? 'Подключаемся…'
-            : 'Подключиться через MetaMask'
-        }
-      >
-        {status === 'pending' ? 'Connecting…' : 'MetaMask'}
-      </button>
-
-      {wcAvailable && (
-        <button
-          onClick={() => wcConn && connect({ connector: wcConn })}
-          disabled={!wcAvailable || status === 'pending'}
-          className={`px-4 py-2 rounded-lg transition ${
-            !wcAvailable || status === 'pending'
-              ? 'opacity-50 cursor-not-allowed bg-white/10'
-              : 'bg-white/10 hover:bg-white/20'
-          }`}
-          title={
-            !wcAvailable
-              ? 'WalletConnect отключён.'
-              : status === 'pending'
-              ? 'Подключаемся…'
-              : 'Подключиться через WalletConnect'
-          }
-        >
-          {status === 'pending' ? 'Connecting…' : 'WalletConnect'}
-        </button>
-      )}
+    <div className="flex w-full flex-col gap-3">
+      {connectors.map((c) => {
+        const ready = (c as any).ready ?? true; // на десктопе без расширения injected будет not ready
+        return (
+          <button
+            key={c.id}
+            onClick={() => connect({ connector: c })}
+            disabled={!ready || status === 'pending'}
+            className="inline-flex h-11 items-center justify-center rounded-xl bg-sky-500 px-4 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {status === 'pending' ? 'Connecting…' : `Connect ${c.name}`}
+            {!ready && ' (not ready)'}
+          </button>
+        );
+      })}
 
       {error && (
         <div className="w-full text-sm text-red-300">
