@@ -43,7 +43,7 @@ export default function ConnectButton() {
   return (
     <div className="flex w-full flex-col gap-3">
       {connectors.map((c) => {
-        const ready = (c as any).ready ?? true; // на десктопе без расширения injected будет not ready
+        const ready = (c as any).ready ?? true;
         return (
           <button
             key={c.id}
