@@ -3,11 +3,9 @@
 import { ReactNode, useMemo } from 'react';
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { mainnet, base, arbitrum } from 'wagmi/chains';
-import { injected } from 'wagmi/connectors';
-import { walletConnect } from 'wagmi/connectors';
+import { injected, walletConnect } from 'wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const wcProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID; // убедись, что в Vercel задано!
+import { env, assertEnv } from '@/lib/env';
 
 const chains = [mainnet, base, arbitrum] as const;
 const transports = {
@@ -17,22 +15,29 @@ const transports = {
 } as const;
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const config = useMemo(() => {
-    const isClient = typeof window !== 'undefined';
+  // Log/validate env once on client
+  useMemo(() => { assertEnv(); }, []);
 
+  const config = useMemo(() => {
     const connectors = [
       injected({ shimDisconnect: true }),
-      // ВАЖНО: без встроенной QR-модалки. Её рисуем сами.
-      ...(isClient && wcProjectId
-        ? [walletConnect({ projectId: wcProjectId, showQrModal: false })]
-        : []),
+      walletConnect({
+        projectId: env.WC_PROJECT_ID || '',
+        showQrModal: true,
+        metadata: {
+          name: 'USATether Wallet',
+          description: 'Simple, fast & secure stablecoin wallet',
+          url: 'https://usatether.io',
+          icons: ['https://usatether.io/icon.png'],
+        },
+      }),
     ];
 
     return createConfig({
       chains,
       transports,
       connectors,
-      ssr: false, // wagmi v2
+      ssr: false,
     });
   }, []);
 
