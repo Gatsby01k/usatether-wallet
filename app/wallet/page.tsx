@@ -16,7 +16,13 @@ export default function WalletPage() {
   const { address, isConnected, chain } = useAccount();
   const { disconnect } = useDisconnect();
   const { chains, switchChain } = useSwitchChain();
-  const { data: nativeBalance } = useBalance({ address, chainId: chain?.id, watch: true });
+
+  // ✅ wagmi v2: нет watch, используем query.refetchInterval
+  const { data: nativeBalance } = useBalance({
+    address,
+    chainId: chain?.id,
+    query: { refetchInterval: 12000 },
+  });
 
   const supportedChains = useMemo(
     () => [mainnet, base, arbitrum].filter(c => chains.some(ch => ch.id === c.id)),
