@@ -15,7 +15,7 @@ const transports = {
 } as const;
 
 export default function Providers({ children }: { children: ReactNode }) {
-  // Log/validate env once on client
+  // Проверим env при монтировании
   useMemo(() => { assertEnv(); }, []);
 
   const config = useMemo(() => {
