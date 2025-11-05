@@ -19,7 +19,7 @@ export default function ConnectModal({ open, onClose }: Props) {
     let injected = connectors.find((c) => c.id === 'injected');
     if (!injected) injected = connectors.find((c) => /inject/i.test(c.name));
     let wc = connectors.find((c) => c.id === 'walletConnect');
-    if (!wc) wc = connectors.find((c) => /wallet\\s*connect/i.test(c.name));
+    if (!wc) wc = connectors.find((c) => /wallet\s*connect/i.test(c.name));
     return { metaMask: injected, wcConnector: wc };
   }, [connectors]);
 
@@ -78,7 +78,7 @@ export default function ConnectModal({ open, onClose }: Props) {
         )}
         {error && (
           <div className="mt-3 text-center text-sm text-red-300">
-            {error.shortMessage || error.message}
+            {(error as any)?.shortMessage ?? (error as Error)?.message ?? 'Connection failed'}
           </div>
         )}
 
