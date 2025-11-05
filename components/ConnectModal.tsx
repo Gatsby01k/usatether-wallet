@@ -1,9 +1,8 @@
+// components/ConnectModal.tsx
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { useConnect } from 'wagmi';
-import { injected } from 'wagmi/connectors';
-import { walletConnect } from 'wagmi/connectors';
 
 type Props = { open: boolean; onClose: () => void };
 
@@ -12,13 +11,20 @@ export default function ConnectModal({ open, onClose }: Props) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // Находим именно наши нужные коннекторы из wagmi
+  // ✅ ВАЖНО: ищем по свойствам уже СУЩЕСТВУЮЩИХ коннекторов
   const metaMask = useMemo(
-    () => connectors.find((c) => c.id === injected({}).id),
+    () =>
+      connectors.find(
+        (c) =>
+          c.id === 'injected' ||
+          c.type === 'injected' ||
+          c.name.toLowerCase().includes('metamask')
+      ),
     [connectors]
   );
+
   const wc = useMemo(
-    () => connectors.find((c) => c.id === walletConnect({ projectId: 'x' }).id),
+    () => connectors.find((c) => c.id === 'walletConnect' || c.type === 'walletConnect'),
     [connectors]
   );
 
