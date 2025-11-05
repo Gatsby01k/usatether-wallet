@@ -3,86 +3,74 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useConnect } from 'wagmi';
+import { Loader2 } from 'lucide-react';
+import { env } from '@/lib/env';
 
 type Props = { open: boolean; onClose: () => void };
 
 export default function ConnectModal({ open, onClose }: Props) {
-  const { connectAsync, connectors, status, error } = useConnect();
+  const { connect, connectors, status, error } = useConnect();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // ✅ ВАЖНО: ищем по свойствам уже СУЩЕСТВУЮЩИХ коннекторов
-  const metaMask = useMemo(
-    () =>
-      connectors.find(
-        (c) =>
-          c.id === 'injected' ||
-          c.type === 'injected' ||
-          c.name.toLowerCase().includes('metamask')
-      ),
-    [connectors]
-  );
+  const hasWalletConnectKey = !!env.WC_PROJECT_ID;
 
-  const wc = useMemo(
-    () => connectors.find((c) => c.id === 'walletConnect' || c.type === 'walletConnect'),
-    [connectors]
-  );
+  const { metaMask, wcConnector } = useMemo(() => {
+    let injected = connectors.find((c) => c.id === 'injected');
+    if (!injected) injected = connectors.find((c) => /inject/i.test(c.name));
+    let wc = connectors.find((c) => c.id === 'walletConnect');
+    if (!wc) wc = connectors.find((c) => /wallet\\s*connect/i.test(c.name));
+    return { metaMask: injected, wcConnector: wc };
+  }, [connectors]);
 
-  if (!open || !mounted) return null;
-
-  async function handleInjected() {
-    if (!metaMask) return;
-    await connectAsync({ connector: metaMask });
-    onClose();
-  }
-
-  async function handleWalletConnect() {
-    if (!wc) return;
-    await connectAsync({ connector: wc });
-    onClose();
-  }
+  if (!open) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center"
-      onClick={onClose}
-    >
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-      <div
-        className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0B1220] p-4 text-white shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold">Connect wallet</h3>
-          <button onClick={onClose} aria-label="Close" className="opacity-70 hover:opacity-100">
-            ✕
-          </button>
-        </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+      <div className="w-full max-w-md rounded-2xl bg-zinc-900/90 p-6 text-white backdrop-blur">
+        <div className="mb-4 text-xl font-semibold">Connect your wallet</div>
+
+        {!hasWalletConnectKey && (
+          <div className="mb-4 rounded-lg bg-red-500/10 p-3 text-red-300">
+            WalletConnect key is not configured. Ask admin to set <code>NEXT_PUBLIC_WC_PROJECT_ID</code> in production.
+          </div>
+        )}
 
         <div className="space-y-3">
+          {/* MetaMask / Injected */}
           <button
-            onClick={handleInjected}
-            disabled={!metaMask}
-            className={`w-full rounded-xl px-4 py-3 text-left bg-white/5 hover:bg-white/10 transition
-              ${!metaMask ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={() => metaMask && connect({ connector: metaMask })}
+            disabled={!metaMask || status === 'pending'}
+            className="flex w-full items-center justify-between rounded-xl bg-white/5 px-4 py-3 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <div className="font-medium">MetaMask (Browser)</div>
-            <div className="text-sm opacity-70">Connect via injected provider</div>
+            <div>
+              <div className="text-sm font-medium">MetaMask (Injected)</div>
+              <div className="text-xs text-white/50">Connect via injected provider</div>
+            </div>
+            {status === 'pending' ? (
+              <Loader2 className="h-4 w-4 animate-spin text-white/80" />
+            ) : (
+              <img src="/metamask.svg" alt="" className="h-5 w-5 opacity-90" />
+            )}
           </button>
 
+          {/* WalletConnect */}
           <button
-            onClick={handleWalletConnect}
-            disabled={!wc}
-            className={`w-full rounded-xl px-4 py-3 text-left bg-white/5 hover:bg-white/10 transition
-              ${!wc ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={() => wcConnector && connect({ connector: wcConnector })}
+            disabled={!wcConnector || status === 'pending' || !hasWalletConnectKey}
+            className="flex w-full items-center justify-between rounded-xl bg-white/5 px-4 py-3 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            title={!hasWalletConnectKey ? 'WalletConnect key is not configured' : undefined}
           >
-            <div className="font-medium">WalletConnect</div>
-            <div className="text-sm opacity-70">QR / mobile deep link</div>
+            <div>
+              <div className="text-sm font-medium">WalletConnect</div>
+              <div className="text-xs text-white/50">Connect any mobile wallet</div>
+            </div>
+            {status === 'pending' ? (
+              <Loader2 className="h-4 w-4 animate-spin text-white/80" />
+            ) : (
+              <img src="/walletconnect.svg" alt="" className="h-5 w-5 opacity-90" />
+            )}
           </button>
-        </div>
-
-        <div className="mt-4 text-center text-xs opacity-60">
-          Self-custody only. We never store your keys.
         </div>
 
         {status === 'pending' && (
@@ -93,6 +81,12 @@ export default function ConnectModal({ open, onClose }: Props) {
             {error.shortMessage || error.message}
           </div>
         )}
+
+        <div className="mt-6 text-center">
+          <button onClick={onClose} className="rounded-xl bg-white/10 px-4 py-2 hover:bg-white/15">
+            Close
+          </button>
+        </div>
       </div>
     </div>
   );
