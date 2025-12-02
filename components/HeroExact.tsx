@@ -4,7 +4,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import ConnectWalletCTA from "@/components/ConnectWalletCTA";
+import ConnectButton from "@/components/ConnectButton";
 
 export default function HeroExact() {
   return (
