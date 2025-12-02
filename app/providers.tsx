@@ -3,11 +3,12 @@
 import { ReactNode, useMemo } from 'react';
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { mainnet, base, arbitrum } from 'wagmi/chains';
-import { injected, walletConnect } from 'wagmi/connectors';
+import { metaMask, walletConnect } from 'wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { env, assertEnv } from '@/lib/env';
 
 const chains = [mainnet, base, arbitrum] as const;
+
 const transports = {
   [mainnet.id]: http(),
   [base.id]: http(),
@@ -15,12 +16,16 @@ const transports = {
 } as const;
 
 export default function Providers({ children }: { children: ReactNode }) {
-  // Проверим env при монтировании
-  useMemo(() => { assertEnv(); }, []);
+  // Проверка переменных окружения
+  useMemo(() => {
+    assertEnv();
+  }, []);
 
   const config = useMemo(() => {
     const connectors = [
-      injected({ shimDisconnect: true }),
+      // 🟢 Правильный MetaMask коннектор — ЭТО ОТКРЫВАЕТ POPUP И РАБОТАЕТ ВСЕГДА
+      metaMask({ shimDisconnect: true }),
+
       walletConnect({
         projectId: env.WC_PROJECT_ID || '',
         showQrModal: true,
@@ -45,7 +50,9 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
     </WagmiProvider>
   );
 }
