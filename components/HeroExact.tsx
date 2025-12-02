@@ -4,7 +4,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import ConnectButton from "@/components/ConnectButton";
+import ConnectButton from "@/components/ConnectButton"; // ← правильная кнопка
 
 export default function HeroExact() {
   return (
@@ -41,7 +41,8 @@ export default function HeroExact() {
           </Link>
 
           <div className="relative z-20">
-            <ConnectWalletCTA />
+            {/* было: <ConnectWalletCTA /> */}
+            <ConnectButton /> {/* ← теперь кнопка реально ОТКРЫВАЕТ модал */}
           </div>
         </div>
 
