@@ -16,15 +16,14 @@ const transports = {
 } as const;
 
 export default function Providers({ children }: { children: ReactNode }) {
-  // Проверка переменных окружения
   useMemo(() => {
     assertEnv();
   }, []);
 
   const config = useMemo(() => {
     const connectors = [
-      // 🟢 Правильный MetaMask коннектор — ЭТО ОТКРЫВАЕТ POPUP И РАБОТАЕТ ВСЕГДА
-      metaMask({ shimDisconnect: true }),
+      // 👉 MetaMask коннектор — без shimDisconnect
+      metaMask(),
 
       walletConnect({
         projectId: env.WC_PROJECT_ID || '',
